@@ -1,8 +1,8 @@
-package Main.Materia.Controllers;
+package main.Materia.Controllers;
 
 import java.util.Stack;
 
-import Main.Materia.Models.Node;
+import main.Materia.Models.Node;
 
 public class ArbolesBinarios {
 
