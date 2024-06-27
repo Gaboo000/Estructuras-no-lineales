@@ -3,128 +3,121 @@ package main.Materia.Controllers;
 import main.Materia.Models.Node;
 
 public class AVLTree {
+
     private Node root;
 
-
-    //Obtener la altura de un node 
-    private int height(Node node){
+    // Obtener la altura de un nodo
+    private int height (Node node){
         if (node == null){
             return 0;
         }
         return node.getHeight();
     }
 
-    // Metodo que obtenga el factor de balanceo o equilibrio de un nodo
-    private int getBalance(Node node){
-        if (node == null){
+    // Método que obtenga el factor de balanceo o equilibrio 
+    private int getBalance (Node node){
+        if (node == null) {
             return 0;
         }
         return height(node.getLeft()) - height(node.getRight());
     }
 
-    public Node insert (Node node, int value){
-        if (node == null){
+    public Node insert (Node node, int value ){
+
+        if (node == null) {
             return new Node(value);
         }
-
         if (value > node.getValue()){
-            node.setRight((insert(node.getRight(),value)));
+            node.setRight(insert(node.getRight(), value));
         }else if (value < node.getValue()){
             node.setLeft(insert(node.getLeft(), value));
-        }else {
+        }else{
             return node;
         }
         
+        // Actualizar la altura del predecesor 
+        node.setHeight(1 + Math.max(height(node.getLeft()), height(node.getRight())));
 
-        //Actualizar la altura del predecesor o el antecesor
-        node.setHeight(1+Math.max(height(node.getLeft()),height(node.getRight())));
-
-        ///calcular el balance
+        // Calcular el balance
         int balance = getBalance(node);
 
-        /// si el nondo esta desbalanceado se tiene 3 casos
-
-        //caso izquierda - izquierda
-        if(balance > 1 && value < node.getLeft().getValue()){
+        // Si el nodo está desbalenceado se tiene 3 casos
+        // Caso Izquierda - Izquierda:
+        if (balance > 1 && value < node.getLeft().getValue()) {
             return rightRotate(node);
-
+            
         }
-
-        /// caso derecha - derecha 
-        if ( balance <- 1 && value > node.getRight().getValue()){
+        
+        // Caso Derecha - Derecha:
+        if (balance < -1 && value > node.getRight().getValue()) {
             return leftRotate(node);
+            
         }
-
-
-        //caso izquierda derecha
-        if ( balance >1 && value > node.getLeft().getValue()){
+        
+        // Caso Izquierda - Derecha:
+        if (balance > 1 && value > node.getLeft().getValue()) {
             node.setLeft(leftRotate(node.getLeft()));
-            return leftRotate(node);
-
-        }
-
-
-        /// caso derecha - izquierda 
-        if (balance <-1 && value < node.getRight().getValue()){
-            node.setLeft(rightRotate(node.getRight()));
             return rightRotate(node);
-
         }
-        System.out.println("Nodo a insertar: "+node.getValue()+", Balance: "+ balance);
+        
+        // Caso Derecha - Izquierda:
+        if (balance < -1 && value < node.getRight().getValue()) {
+            node.setRight(rightRotate(node.getRight()));
+            return leftRotate(node);
+        }
+
+        System.out.println("Inserted Node: " + node.getValue() + " Balance :" + balance);
+
         return node;
     }
 
-    private Node rightRotate(Node nodeR){
-        System.out.println("Rotacion derecha en: "+nodeR.getValue()+", Balance "+getBalance(nodeR));
+    private Node rightRotate (Node nodeR){
+        System.out.println("Right Rotate on: " + nodeR.getValue() + "Balance " + getBalance(nodeR));
         Node x = nodeR.getLeft();
-        
+        System.out.println("New root after right rotate :" + x.getValue());
         Node temp = x.getRight();
 
-
-        /////
-        
-
-        //realizar la rotacion
+        // Realizar la rotación
         x.setRight(nodeR);
         nodeR.setLeft(temp);
 
-
-        //actualizando las alturas
-        nodeR.setHeight(Math.max(height(x.getLeft()),height(nodeR.getRight()))+1 );
-        //devolder nueva raiz
-
-        return x;
-
-    }
-
-    private Node leftRotate(Node nodeR){
-        System.out.println("Rotacion izquierda en: "+nodeR.getValue()+", Balance "+getBalance(nodeR));
-
-        Node y = nodeR.getRight();
-        Node temp = y.getLeft();
-        // Realizar la rotación
-        y.setLeft(nodeR);
-        nodeR.setRight(temp);
-
         // Actualizar las alturas
         nodeR.setHeight(Math.max(height(nodeR.getLeft()), height(nodeR.getRight()))+1);
+        x.setHeight(Math.max(height(x.getLeft()), height(x.getRight()))+1);
+
+        // Devolver una raíz
+        return x;
+    }
+    
+    private Node leftRotate (Node nodeL){
+        System.out.println("Left Rotate on: " + nodeL.getValue() + "Balance " + getBalance(nodeL));
+        Node y = nodeL.getRight();
+        System.out.println("New root after left rotate :" + y.getValue());
+        Node temp = y.getLeft();
+        
+        // Realizar la rotación
+        y.setLeft(nodeL);
+        nodeL.setRight(temp);
+
+        // Actualizar las alturas
+        nodeL.setHeight(Math.max(height(nodeL.getLeft()), height(nodeL.getRight()))+1);
         y.setHeight(Math.max(height(y.getLeft()), height(y.getRight()))+1);
     
         // Devolver una raíz
         return y;
     }
     
-
+    // Metodo para insertar nodos
     public void insert(int value){
-        System.out.println("Nodo a insertar sera el "+value);
-        root = insert(root,value);
+        System.out.println("\nNodo a insertar será el "+value);
+        root = insert(root, value);
         printTree();
         System.out.println("\n-------\n");
-    }
-
-    public void printTree(){
-        printTreeNode2(root,"",true);
-
+    } 
+    
+    // Método para imprimir
+    public void printTree (){
+        printTreeNode2(root, "", true);
     }
 
     public void printTreeNode2(Node root, String prefix, boolean isLeft) {
@@ -145,6 +138,4 @@ public class AVLTree {
             }
         }
     }
-
-    
 }
